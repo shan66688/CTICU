@@ -2,7 +2,7 @@
 title: "Descriptive"
 author: "Mingxu Shan"
 date: "3/10/2019"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
-
-dsacdsw
