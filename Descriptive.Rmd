@@ -41,6 +41,7 @@ rawdata$'Surgery duration'
 desdata <- rawdata %>% 
   separate("Surgery duration", into = c("Sdate", "Stime"), sep= " ") %>%
   separate("OR Exit Date And Time", into = c("OREdate", "OREtime"), sep= " ") %>%
+  separate("OREtime", into = c("OREhour", "OREmin","OREsec"), sep= ":") %>%
   rename(age = "Patient Age", 
          sex = "Sex", 
          BMI = "BMI", 
@@ -83,13 +84,26 @@ desdata <- rawdata %>%
        DLCO,
        RFD ,
        PAD,
-       OREtime)
+       OREhour)
   
 ```
 
 ```{r}
+desdata$OREhour<- as.numeric(desdata$OREhour )
 
 ```
+
+
+```{r create period variable}
+desdata$period <- "P2"
+#desdata$period[desdata$OREhour >=18] = "P2"
+#desdata$period[desdata$OREhour < 06] ="P1"
+desdata$period[desdata$OREhour <18 & desdata$OREhour >=7 ] = "P1"
+sum(desdata$OREhour <18 & desdata$OREhour >=7)
+sum(desdata$period == "P1")
+sum(desdata$period == "P2")
+```
+
 
 
 ```{r combine ethnicity}
@@ -103,12 +117,7 @@ desdata$Ethnicity[rawdata$`Race - Other` == "Yes"] = "Other"
 desdata$Ethnicity[rawdata$`Race Documented` == "No"] = "No document"
 ```
 
-```{r create period variable}
 
-desdata$period <- NULL
-desdata$period <- NULL
-
-```
 
 
 ```{r}
