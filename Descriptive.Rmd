@@ -48,7 +48,7 @@ desdata <- rawdata %>%
          PMM = "Predicted Morbidity or Mortality", 
          PRM = "Predicted Risk of Mortality", 
          PPV = "Predicted Prolonged Ventilation", 
-         Reoperation = "Incidence",
+         Reop = "Incidence",
          Urgent = "Urgent Or Emergent Reason",
          Sug_Dur = "Stime",
          Pri_MI = "Prior MI",
@@ -70,7 +70,7 @@ desdata <- rawdata %>%
        PMM , 
        PRM , 
        PPV,
-       Reoperation ,
+       Reop ,
        Urgent ,
        Sug_Dur ,
        Pri_MI ,
@@ -124,7 +124,61 @@ desdata$Ethnicity[rawdata$`Race Documented` == "No"] = "No document"
 names(rawdata)
 names(desdata)
 ```
+#Categorical 
 
+```{r sex descriptive}
+#desdata$sex[desdata$sex == "Not documented"] <- NA
+length(desdata$sex)
+sum(is.na(desdata$sex))
+sum(is.na(desdata$sex)) / length(desdata$sex)
+table(desdata$sex)
+
+#table(desdata$sex) / length(desdata$sex)
+paste(round(100*(table(desdata$sex) / 861), 2), "%", sep="")
+
+length(desdata$sex[desdata$period == "P1"])
+length(desdata$sex[desdata$period == "P2"])
+
+sum(is.na(desdata$sex[desdata$period == "P1"]))
+sum(is.na(desdata$sex[desdata$period == "P2"]))
+
+table(desdata$sex[desdata$period == "P1"]) 
+table(desdata$sex[desdata$period == "P2"]) 
+
+#table(desdata$sex[desdata$period == "P1"]) / length(desdata$sex[desdata$period == "P1"])
+paste(round(100*(table(desdata$sex[desdata$period == "P1"]) / length(desdata$sex[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$sex[desdata$period == "P2"]) / length(desdata$sex[desdata$period == "P2"])
+paste(round(100*(table(desdata$sex[desdata$period == "P2"]) / length(desdata$sex[desdata$period == "P2"])), 2), "%", sep="")
+```
+```{r sex descriptive}
+#desdata$sex[desdata$sex == "Not documented"] <- NA
+length(desdata$sex)
+sum(is.na(desdata$sex))
+sum(is.na(desdata$sex)) / length(desdata$sex)
+table(desdata$sex)
+
+#table(desdata$sex) / length(desdata$sex)
+paste(round(100*(table(desdata$sex) / 861), 2), "%", sep="")
+
+length(desdata$sex[desdata$period == "P1"])
+length(desdata$sex[desdata$period == "P2"])
+
+sum(is.na(desdata$sex[desdata$period == "P1"]))
+sum(is.na(desdata$sex[desdata$period == "P2"]))
+
+table(desdata$sex[desdata$period == "P1"]) 
+table(desdata$sex[desdata$period == "P2"]) 
+
+#table(desdata$sex[desdata$period == "P1"]) / length(desdata$sex[desdata$period == "P1"])
+paste(round(100*(table(desdata$sex[desdata$period == "P1"]) / length(desdata$sex[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$sex[desdata$period == "P2"]) / length(desdata$sex[desdata$period == "P2"])
+paste(round(100*(table(desdata$sex[desdata$period == "P2"]) / length(desdata$sex[desdata$period == "P2"])), 2), "%", sep="")
+```
+
+
+#Continuous
 ```{r}
 desdata$age[desdata$period == "P1"] %>% na.omit() %>% length()
 summary(desdata$age[desdata$period == "P1"])
