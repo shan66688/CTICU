@@ -355,6 +355,31 @@ paste(round(100*(table(desdata$PFT[desdata$period == "P1"]) / length(desdata$PFT
 #table(desdata$PFT[desdata$period == "P2"]) / length(desdata$PFT[desdata$period == "P2"])
 paste(round(100*(table(desdata$PFT[desdata$period == "P2"]) / length(desdata$PFT[desdata$period == "P2"])), 2), "%", sep="")
 ```
+```{r DLCOT descriptive}
+#desdata$DLCOT[desdata$DLCOT == "Not documented"] <- NA
+length(desdata$DLCOT)
+sum(is.na(desdata$DLCOT))
+sum(is.na(desdata$DLCOT)) / length(desdata$DLCOT)
+table(desdata$DLCOT)
+
+#table(desdata$DLCOT) / length(desdata$DLCOT)
+paste(round(100*(table(desdata$DLCOT) / 861), 2), "%", sep="")
+
+length(desdata$DLCOT[desdata$period == "P1"])
+length(desdata$DLCOT[desdata$period == "P2"])
+
+sum(is.na(desdata$DLCOT[desdata$period == "P1"]))
+sum(is.na(desdata$DLCOT[desdata$period == "P2"]))
+
+table(desdata$DLCOT[desdata$period == "P1"]) 
+table(desdata$DLCOT[desdata$period == "P2"]) 
+
+#table(desdata$DLCOT[desdata$period == "P1"]) / length(desdata$DLCOT[desdata$period == "P1"])
+paste(round(100*(table(desdata$DLCOT[desdata$period == "P1"]) / length(desdata$DLCOT[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$DLCOT[desdata$period == "P2"]) / length(desdata$DLCOT[desdata$period == "P2"])
+paste(round(100*(table(desdata$DLCOT[desdata$period == "P2"]) / length(desdata$DLCOT[desdata$period == "P2"])), 2), "%", sep="")
+```
 
 ```{r RFD descriptive}
 #desdata$RFD[desdata$RFD == "Not documented"] <- NA
@@ -411,7 +436,7 @@ paste(round(100*(table(desdata$PAD[desdata$period == "P2"]) / length(desdata$PAD
 
 
 #Continuous
-```{r}
+```{r age descriptive}
 desdata$age[desdata$period == "P1"] %>% na.omit() %>% length()
 summary(desdata$age[desdata$period == "P1"])
 desdata$age[desdata$period == "P1"] %>% na.omit() %>% sd()
@@ -423,3 +448,48 @@ summary(desdata$age)
 desdata$age %>% na.omit() %>% sd()
 ```
 
+```{r PMM descriptive}
+desdata$PMM[desdata$period == "P1"] %>% na.omit() %>% length()
+summary(desdata$PMM[desdata$period == "P1"])
+desdata$PMM[desdata$period == "P1"] %>% na.omit() %>% sd()
+desdata$PMM[desdata$period == "P2"] %>% na.omit() %>% length()
+summary(desdata$PMM[desdata$period == "P2"])
+desdata$PMM[desdata$period == "P2"] %>% na.omit() %>% sd()
+desdata$PMM %>% na.omit() %>% length()
+summary(desdata$PMM)
+desdata$PMM %>% na.omit() %>% sd()
+```
+
+```{r PRM descriptive}
+desdata$PRM[desdata$period == "P1"] %>% na.omit() %>% length()
+summary(desdata$PRM[desdata$period == "P1"])
+desdata$PRM[desdata$period == "P1"] %>% na.omit() %>% sd()
+desdata$PRM[desdata$period == "P2"] %>% na.omit() %>% length()
+summary(desdata$PRM[desdata$period == "P2"])
+desdata$PRM[desdata$period == "P2"] %>% na.omit() %>% sd()
+desdata$PRM %>% na.omit() %>% length()
+summary(desdata$PRM)
+desdata$PRM %>% na.omit() %>% sd()
+```
+
+```{r PRM t}
+var.test(desdata$PRM[desdata$period == "P2"], desdata$PRM[desdata$period == "P1"])
+t.test(x= desdata$PRM[desdata$period == "P1"], y = desdata$PRM[desdata$period == "P2"], paired = FALSE, var.equal = TRUE, conf.level = 0.95)
+```
+
+
+
+
+
+
+```{r IHV descriptive}
+desdata$IHV[desdata$period == "P1"] %>% na.omit() %>% length()
+summary(desdata$IHV[desdata$period == "P1"])
+desdata$IHV[desdata$period == "P1"] %>% na.omit() %>% sd()
+desdata$IHV[desdata$period == "P2"] %>% na.omit() %>% length()
+summary(desdata$IHV[desdata$period == "P2"])
+desdata$IHV[desdata$period == "P2"] %>% na.omit() %>% sd()
+desdata$IHV %>% na.omit() %>% length()
+summary(desdata$IHV)
+desdata$IHV %>% na.omit() %>% sd()
+```
