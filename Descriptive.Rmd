@@ -32,9 +32,7 @@ rawdata <- read_excel("data/Master worksheet CTICU extubation times .xls",
         "numeric", "numeric", "numeric"))
 ```
 
-```{r}
-rawdata$'Surgery duration'
-```
+
 
 
 ```{r descriptive data}
@@ -49,7 +47,7 @@ desdata <- rawdata %>%
          PRM = "Predicted Risk of Mortality", 
          PPV = "Predicted Prolonged Ventilation", 
          Reop = "Incidence",
-         Urgent = "Urgent Or Emergent Reason",
+         Urgent = "Status",
          Sug_Dur = "Stime",
          Pri_MI = "Prior MI",
          HF_w2w = "Heart Failure within 2 weeks",
@@ -61,8 +59,8 @@ desdata <- rawdata %>%
          DLCOT = "DLCO Test Performed",
          DLCO = "DLCO Predicted",
          RFD = "RF-Renal Fail-Dialysis",
-         PAD = "RF-Peripheral Arterial Disease"
-         
+         PAD = "RF-Peripheral Arterial Disease",
+         IHV = "Initial Hours Ventilated"
          ) %>%  
   select(age,
        sex,  
@@ -84,29 +82,24 @@ desdata <- rawdata %>%
        DLCO,
        RFD ,
        PAD,
-       OREhour)
+       OREhour,
+       IHV)
   
-```
 
-```{r}
+
+
 desdata$OREhour<- as.numeric(desdata$OREhour )
 
-```
 
 
-```{r create period variable}
+
+#r create period variable
 desdata$period <- "P2"
 #desdata$period[desdata$OREhour >=18] = "P2"
 #desdata$period[desdata$OREhour < 06] ="P1"
 desdata$period[desdata$OREhour <18 & desdata$OREhour >=7 ] = "P1"
-sum(desdata$OREhour <18 & desdata$OREhour >=7)
-sum(desdata$period == "P1")
-sum(desdata$period == "P2")
-```
 
-
-
-```{r combine ethnicity}
+# combine ethnicity
 desdata$Ethnicity <- NULL
 desdata$Ethnicity[rawdata$`Race - White` == "Yes"] = "White"
 desdata$Ethnicity[rawdata$`Race - Black / African American` == "Yes"] = "Black"
@@ -175,6 +168,245 @@ paste(round(100*(table(desdata$sex[desdata$period == "P1"]) / length(desdata$sex
 
 #table(desdata$sex[desdata$period == "P2"]) / length(desdata$sex[desdata$period == "P2"])
 paste(round(100*(table(desdata$sex[desdata$period == "P2"]) / length(desdata$sex[desdata$period == "P2"])), 2), "%", sep="")
+```
+
+```{r Reop descriptive}
+#desdata$Reop[desdata$Reop == "Not documented"] <- NA
+length(desdata$Reop)
+sum(is.na(desdata$Reop))
+sum(is.na(desdata$Reop)) / length(desdata$Reop)
+table(desdata$Reop)
+
+#table(desdata$Reop) / length(desdata$Reop)
+paste(round(100*(table(desdata$Reop) / 861), 2), "%", sep="")
+
+length(desdata$Reop[desdata$period == "P1"])
+length(desdata$Reop[desdata$period == "P2"])
+
+sum(is.na(desdata$Reop[desdata$period == "P1"]))
+sum(is.na(desdata$Reop[desdata$period == "P2"]))
+
+table(desdata$Reop[desdata$period == "P1"]) 
+table(desdata$Reop[desdata$period == "P2"]) 
+
+#table(desdata$Reop[desdata$period == "P1"]) / length(desdata$Reop[desdata$period == "P1"])
+paste(round(100*(table(desdata$Reop[desdata$period == "P1"]) / length(desdata$Reop[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$Reop[desdata$period == "P2"]) / length(desdata$Reop[desdata$period == "P2"])
+paste(round(100*(table(desdata$Reop[desdata$period == "P2"]) / length(desdata$Reop[desdata$period == "P2"])), 2), "%", sep="")
+```
+
+
+```{r Urgent descriptive}
+#desdata$Urgent[desdata$Urgent == "Not documented"] <- NA
+length(desdata$Urgent)
+sum(is.na(desdata$Urgent))
+sum(is.na(desdata$Urgent)) / length(desdata$Urgent)
+table(desdata$Urgent)
+
+#table(desdata$Urgent) / length(desdata$Urgent)
+paste(round(100*(table(desdata$Urgent) / 861), 2), "%", sep="")
+
+length(desdata$Urgent[desdata$period == "P1"])
+length(desdata$Urgent[desdata$period == "P2"])
+
+sum(is.na(desdata$Urgent[desdata$period == "P1"]))
+sum(is.na(desdata$Urgent[desdata$period == "P2"]))
+
+table(desdata$Urgent[desdata$period == "P1"]) 
+table(desdata$Urgent[desdata$period == "P2"]) 
+
+#table(desdata$Urgent[desdata$period == "P1"]) / length(desdata$Urgent[desdata$period == "P1"])
+paste(round(100*(table(desdata$Urgent[desdata$period == "P1"]) / length(desdata$Urgent[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$Urgent[desdata$period == "P2"]) / length(desdata$Urgent[desdata$period == "P2"])
+paste(round(100*(table(desdata$Urgent[desdata$period == "P2"]) / length(desdata$Urgent[desdata$period == "P2"])), 2), "%", sep="")
+```
+
+
+```{r HF_w2w descriptive}
+#desdata$HF_w2w[desdata$HF_w2w == "Not documented"] <- NA
+length(desdata$HF_w2w)
+sum(is.na(desdata$HF_w2w))
+sum(is.na(desdata$HF_w2w)) / length(desdata$HF_w2w)
+table(desdata$HF_w2w)
+
+#table(desdata$HF_w2w) / length(desdata$HF_w2w)
+paste(round(100*(table(desdata$HF_w2w) / 861), 2), "%", sep="")
+
+length(desdata$HF_w2w[desdata$period == "P1"])
+length(desdata$HF_w2w[desdata$period == "P2"])
+
+sum(is.na(desdata$HF_w2w[desdata$period == "P1"]))
+sum(is.na(desdata$HF_w2w[desdata$period == "P2"]))
+
+table(desdata$HF_w2w[desdata$period == "P1"]) 
+table(desdata$HF_w2w[desdata$period == "P2"]) 
+
+#table(desdata$HF_w2w[desdata$period == "P1"]) / length(desdata$HF_w2w[desdata$period == "P1"])
+paste(round(100*(table(desdata$HF_w2w[desdata$period == "P1"]) / length(desdata$HF_w2w[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$HF_w2w[desdata$period == "P2"]) / length(desdata$HF_w2w[desdata$period == "P2"])
+paste(round(100*(table(desdata$HF_w2w[desdata$period == "P2"]) / length(desdata$HF_w2w[desdata$period == "P2"])), 2), "%", sep="")
+```
+
+
+```{r NYHA descriptive}
+#desdata$NYHA[desdata$NYHA == "Not documented"] <- NA
+length(desdata$NYHA)
+sum(is.na(desdata$NYHA))
+sum(is.na(desdata$NYHA)) / length(desdata$NYHA)
+table(desdata$NYHA)
+
+#table(desdata$NYHA) / length(desdata$NYHA)
+paste(round(100*(table(desdata$NYHA) / 861), 2), "%", sep="")
+
+length(desdata$NYHA[desdata$period == "P1"])
+length(desdata$NYHA[desdata$period == "P2"])
+
+sum(is.na(desdata$NYHA[desdata$period == "P1"]))
+sum(is.na(desdata$NYHA[desdata$period == "P2"]))
+
+table(desdata$NYHA[desdata$period == "P1"]) 
+table(desdata$NYHA[desdata$period == "P2"]) 
+
+#table(desdata$NYHA[desdata$period == "P1"]) / length(desdata$NYHA[desdata$period == "P1"])
+paste(round(100*(table(desdata$NYHA[desdata$period == "P1"]) / length(desdata$NYHA[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$NYHA[desdata$period == "P2"]) / length(desdata$NYHA[desdata$period == "P2"])
+paste(round(100*(table(desdata$NYHA[desdata$period == "P2"]) / length(desdata$NYHA[desdata$period == "P2"])), 2), "%", sep="")
+```
+
+```{r smoker descriptive}
+#desdata$smoker[desdata$smoker == "Not documented"] <- NA
+length(desdata$smoker)
+sum(is.na(desdata$smoker))
+sum(is.na(desdata$smoker)) / length(desdata$smoker)
+table(desdata$smoker)
+
+#table(desdata$smoker) / length(desdata$smoker)
+paste(round(100*(table(desdata$smoker) / 861), 2), "%", sep="")
+
+length(desdata$smoker[desdata$period == "P1"])
+length(desdata$smoker[desdata$period == "P2"])
+
+sum(is.na(desdata$smoker[desdata$period == "P1"]))
+sum(is.na(desdata$smoker[desdata$period == "P2"]))
+
+table(desdata$smoker[desdata$period == "P1"]) 
+table(desdata$smoker[desdata$period == "P2"]) 
+
+#table(desdata$smoker[desdata$period == "P1"]) / length(desdata$smoker[desdata$period == "P1"])
+paste(round(100*(table(desdata$smoker[desdata$period == "P1"]) / length(desdata$smoker[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$smoker[desdata$period == "P2"]) / length(desdata$smoker[desdata$period == "P2"])
+paste(round(100*(table(desdata$smoker[desdata$period == "P2"]) / length(desdata$smoker[desdata$period == "P2"])), 2), "%", sep="")
+```
+
+```{r lung descriptive}
+#desdata$lung[desdata$lung == "Not documented"] <- NA
+length(desdata$lung)
+sum(is.na(desdata$lung))
+sum(is.na(desdata$lung)) / length(desdata$lung)
+table(desdata$lung)
+
+#table(desdata$lung) / length(desdata$lung)
+paste(round(100*(table(desdata$lung) / 861), 2), "%", sep="")
+
+length(desdata$lung[desdata$period == "P1"])
+length(desdata$lung[desdata$period == "P2"])
+
+sum(is.na(desdata$lung[desdata$period == "P1"]))
+sum(is.na(desdata$lung[desdata$period == "P2"]))
+
+table(desdata$lung[desdata$period == "P1"]) 
+table(desdata$lung[desdata$period == "P2"]) 
+
+#table(desdata$lung[desdata$period == "P1"]) / length(desdata$lung[desdata$period == "P1"])
+paste(round(100*(table(desdata$lung[desdata$period == "P1"]) / length(desdata$lung[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$lung[desdata$period == "P2"]) / length(desdata$lung[desdata$period == "P2"])
+paste(round(100*(table(desdata$lung[desdata$period == "P2"]) / length(desdata$lung[desdata$period == "P2"])), 2), "%", sep="")
+```
+
+
+```{r PFT descriptive}
+#desdata$PFT[desdata$PFT == "Not documented"] <- NA
+length(desdata$PFT)
+sum(is.na(desdata$PFT))
+sum(is.na(desdata$PFT)) / length(desdata$PFT)
+table(desdata$PFT)
+
+#table(desdata$PFT) / length(desdata$PFT)
+paste(round(100*(table(desdata$PFT) / 861), 2), "%", sep="")
+
+length(desdata$PFT[desdata$period == "P1"])
+length(desdata$PFT[desdata$period == "P2"])
+
+sum(is.na(desdata$PFT[desdata$period == "P1"]))
+sum(is.na(desdata$PFT[desdata$period == "P2"]))
+
+table(desdata$PFT[desdata$period == "P1"]) 
+table(desdata$PFT[desdata$period == "P2"]) 
+
+#table(desdata$PFT[desdata$period == "P1"]) / length(desdata$PFT[desdata$period == "P1"])
+paste(round(100*(table(desdata$PFT[desdata$period == "P1"]) / length(desdata$PFT[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$PFT[desdata$period == "P2"]) / length(desdata$PFT[desdata$period == "P2"])
+paste(round(100*(table(desdata$PFT[desdata$period == "P2"]) / length(desdata$PFT[desdata$period == "P2"])), 2), "%", sep="")
+```
+
+```{r RFD descriptive}
+#desdata$RFD[desdata$RFD == "Not documented"] <- NA
+length(desdata$RFD)
+sum(is.na(desdata$RFD))
+sum(is.na(desdata$RFD)) / length(desdata$RFD)
+table(desdata$RFD)
+
+#table(desdata$RFD) / length(desdata$RFD)
+paste(round(100*(table(desdata$RFD) / 861), 2), "%", sep="")
+
+length(desdata$RFD[desdata$period == "P1"])
+length(desdata$RFD[desdata$period == "P2"])
+
+sum(is.na(desdata$RFD[desdata$period == "P1"]))
+sum(is.na(desdata$RFD[desdata$period == "P2"]))
+
+table(desdata$RFD[desdata$period == "P1"]) 
+table(desdata$RFD[desdata$period == "P2"]) 
+
+#table(desdata$RFD[desdata$period == "P1"]) / length(desdata$RFD[desdata$period == "P1"])
+paste(round(100*(table(desdata$RFD[desdata$period == "P1"]) / length(desdata$RFD[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$RFD[desdata$period == "P2"]) / length(desdata$RFD[desdata$period == "P2"])
+paste(round(100*(table(desdata$RFD[desdata$period == "P2"]) / length(desdata$RFD[desdata$period == "P2"])), 2), "%", sep="")
+```
+
+
+```{r PAD descriptive}
+#desdata$PAD[desdata$PAD == "Not documented"] <- NA
+length(desdata$PAD)
+sum(is.na(desdata$PAD))
+sum(is.na(desdata$PAD)) / length(desdata$PAD)
+table(desdata$PAD)
+
+#table(desdata$PAD) / length(desdata$PAD)
+paste(round(100*(table(desdata$PAD) / 861), 2), "%", sep="")
+
+length(desdata$PAD[desdata$period == "P1"])
+length(desdata$PAD[desdata$period == "P2"])
+
+sum(is.na(desdata$PAD[desdata$period == "P1"]))
+sum(is.na(desdata$PAD[desdata$period == "P2"]))
+
+table(desdata$PAD[desdata$period == "P1"]) 
+table(desdata$PAD[desdata$period == "P2"]) 
+
+#table(desdata$PAD[desdata$period == "P1"]) / length(desdata$PAD[desdata$period == "P1"])
+paste(round(100*(table(desdata$PAD[desdata$period == "P1"]) / length(desdata$PAD[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$PAD[desdata$period == "P2"]) / length(desdata$PAD[desdata$period == "P2"])
+paste(round(100*(table(desdata$PAD[desdata$period == "P2"]) / length(desdata$PAD[desdata$period == "P2"])), 2), "%", sep="")
 ```
 
 
