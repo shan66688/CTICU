@@ -2,7 +2,129 @@
 title: "Descriptive"
 author: "Mingxu Shan"
 date: "3/10/2019"
-output:
-  word_document: default
-  html_document: default
+output: github_document
 ---
+```{r}
+library(tidyverse)
+library(readxl)
+```
+
+```{r}
+rawdata <- read_excel("data/Master worksheet CTICU extubation times .xls", 
+    sheet = "Master data", col_types = c("numeric", 
+        "numeric", "text", "date", "date", 
+        "date", "date", "text", "text", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "text", "text", "text", "text", "text", 
+        "text", "text", "text", "numeric", 
+        "numeric", "numeric", "text", "text", 
+        "text", "text", "text", "text", "text", 
+        "text", "text", "text", "text", "text", 
+        "numeric", "text", "numeric", "text", 
+        "numeric", "numeric", "text", "text", 
+        "text", "text", "date", "date", 
+        "date", "date", "date", 
+        "text", "numeric", "text", "numeric", 
+        "numeric", "text", "numeric", "text", 
+        "text", "numeric", "numeric", "text", 
+        "text", "text", "text", "text", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric"))
+```
+
+```{r}
+rawdata$'Surgery duration'
+```
+
+
+```{r descriptive data}
+desdata <- rawdata %>% 
+  separate("Surgery duration", into = c("Sdate", "Stime"), sep= " ") %>%
+  separate("OR Exit Date And Time", into = c("OREdate", "OREtime"), sep= " ") %>%
+  rename(age = "Patient Age", 
+         sex = "Sex", 
+         BMI = "BMI", 
+         PMM = "Predicted Morbidity or Mortality", 
+         PRM = "Predicted Risk of Mortality", 
+         PPV = "Predicted Prolonged Ventilation", 
+         Reoperation = "Incidence",
+         Urgent = "Urgent Or Emergent Reason",
+         Sug_Dur = "Stime",
+         Pri_MI = "Prior MI",
+         HF_w2w = "Heart Failure within 2 weeks",
+         NYHA = "Classification-NYHA",
+         smoker = "RF-Tobacco Use",
+         lung = "RF-Chronic Lung Disease",
+         PFT = "RF-Pulmonary Function Test",
+         FEV = "RF-Forced Expiratory Volume Predicted",
+         DLCOT = "DLCO Test Performed",
+         DLCO = "DLCO Predicted",
+         RFD = "RF-Renal Fail-Dialysis",
+         PAD = "RF-Peripheral Arterial Disease"
+         
+         ) %>%  
+  select(age,
+       sex,  
+       BMI, 
+       PMM , 
+       PRM , 
+       PPV,
+       Reoperation ,
+       Urgent ,
+       Sug_Dur ,
+       Pri_MI ,
+       HF_w2w ,
+       NYHA ,
+       smoker,
+       lung,
+       PFT,
+       FEV ,
+       DLCOT ,
+       DLCO,
+       RFD ,
+       PAD,
+       OREtime)
+  
+```
+
+```{r}
+
+```
+
+
+```{r combine ethnicity}
+desdata$Ethnicity <- NULL
+desdata$Ethnicity[rawdata$`Race - White` == "Yes"] = "White"
+desdata$Ethnicity[rawdata$`Race - Black / African American` == "Yes"] = "Black"
+desdata$Ethnicity[rawdata$`Race - Asian` == "Yes"] = "Asian"
+desdata$Ethnicity[rawdata$`Race - American Indian / Alaskan Native` == "Yes"] = "American Indian"
+desdata$Ethnicity[rawdata$`Race - Native Hawaiian / Pacific Islander` == "Yes"] = "Hawaiian"
+desdata$Ethnicity[rawdata$`Race - Other` == "Yes"] = "Other"
+desdata$Ethnicity[rawdata$`Race Documented` == "No"] = "No document"
+```
+
+```{r create period variable}
+
+desdata$period <- NULL
+desdata$period <- NULL
+
+```
+
+
+```{r}
+names(rawdata)
+names(desdata)
+```
+
+```{r}
+desdata$age[desdata$period == "P1"] %>% na.omit() %>% length()
+summary(desdata$age[desdata$period == "P1"])
+desdata$age[desdata$period == "P1"] %>% na.omit() %>% sd()
+desdata$age[desdata$period == "P2"] %>% na.omit() %>% length()
+summary(desdata$age[desdata$period == "P2"])
+desdata$age[desdata$period == "P2"] %>% na.omit() %>% sd()
+desdata$age %>% na.omit() %>% length()
+summary(desdata$age)
+desdata$age %>% na.omit() %>% sd()
+```
+
