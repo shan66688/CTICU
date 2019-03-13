@@ -140,6 +140,8 @@ paste(round(100*(table(desdata$sex[desdata$period == "P1"]) / length(desdata$sex
 
 #table(desdata$sex[desdata$period == "P2"]) / length(desdata$sex[desdata$period == "P2"])
 paste(round(100*(table(desdata$sex[desdata$period == "P2"]) / length(desdata$sex[desdata$period == "P2"])), 2), "%", sep="")
+
+
 ```
 
 ```{r sex descriptive}
@@ -166,6 +168,8 @@ paste(round(100*(table(desdata$sex[desdata$period == "P1"]) / length(desdata$sex
 
 #table(desdata$sex[desdata$period == "P2"]) / length(desdata$sex[desdata$period == "P2"])
 paste(round(100*(table(desdata$sex[desdata$period == "P2"]) / length(desdata$sex[desdata$period == "P2"])), 2), "%", sep="")
+chisq.test(desdata$sex,desdata$period, correct = FALSE)
+
 ```
 
 ```{r Reop descriptive}
@@ -192,6 +196,9 @@ paste(round(100*(table(desdata$Reop[desdata$period == "P1"]) / length(desdata$Re
 
 #table(desdata$Reop[desdata$period == "P2"]) / length(desdata$Reop[desdata$period == "P2"])
 paste(round(100*(table(desdata$Reop[desdata$period == "P2"]) / length(desdata$Reop[desdata$period == "P2"])), 2), "%", sep="")
+
+desdata <- desdata %>%  mutate(Reop = ifelse(Reop == "First cardiovascular surgery","Yes", "No")) 
+chisq.test(desdata$Reop,desdata$period, correct = FALSE)
 ```
 
 
@@ -219,11 +226,44 @@ paste(round(100*(table(desdata$Urgent[desdata$period == "P1"]) / length(desdata$
 
 #table(desdata$Urgent[desdata$period == "P2"]) / length(desdata$Urgent[desdata$period == "P2"])
 paste(round(100*(table(desdata$Urgent[desdata$period == "P2"]) / length(desdata$Urgent[desdata$period == "P2"])), 2), "%", sep="")
+
+
+chisq.test(desdata$Urgent,desdata$period, correct = FALSE)
+```
+
+
+```{r Pri_MI descriptive}
+desdata$Pri_MI[desdata$Pri_MI == "Unknown"] <- NA
+length(desdata$Pri_MI)
+sum(is.na(desdata$Pri_MI))
+sum(is.na(desdata$Pri_MI)) / length(desdata$Pri_MI)
+table(desdata$Pri_MI)
+
+#table(desdata$Pri_MI) / length(desdata$Pri_MI)
+paste(round(100*(table(desdata$Pri_MI) / 861), 2), "%", sep="")
+
+length(desdata$Pri_MI[desdata$period == "P1"])
+length(desdata$Pri_MI[desdata$period == "P2"])
+
+sum(is.na(desdata$Pri_MI[desdata$period == "P1"]))
+sum(is.na(desdata$Pri_MI[desdata$period == "P2"]))
+
+table(desdata$Pri_MI[desdata$period == "P1"]) 
+table(desdata$Pri_MI[desdata$period == "P2"]) 
+
+#table(desdata$Pri_MI[desdata$period == "P1"]) / length(desdata$Pri_MI[desdata$period == "P1"])
+paste(round(100*(table(desdata$Pri_MI[desdata$period == "P1"]) / length(desdata$Pri_MI[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$Pri_MI[desdata$period == "P2"]) / length(desdata$Pri_MI[desdata$period == "P2"])
+paste(round(100*(table(desdata$Pri_MI[desdata$period == "P2"]) / length(desdata$Pri_MI[desdata$period == "P2"])), 2), "%", sep="")
+
+table(desdata$Pri_MI,desdata$period)
+chisq.test(desdata$Pri_MI,desdata$period, correct = FALSE)
 ```
 
 
 ```{r HF_w2w descriptive}
-#desdata$HF_w2w[desdata$HF_w2w == "Not documented"] <- NA
+desdata$HF_w2w[desdata$HF_w2w == "Unknown"] <- NA
 length(desdata$HF_w2w)
 sum(is.na(desdata$HF_w2w))
 sum(is.na(desdata$HF_w2w)) / length(desdata$HF_w2w)
@@ -246,6 +286,7 @@ paste(round(100*(table(desdata$HF_w2w[desdata$period == "P1"]) / length(desdata$
 
 #table(desdata$HF_w2w[desdata$period == "P2"]) / length(desdata$HF_w2w[desdata$period == "P2"])
 paste(round(100*(table(desdata$HF_w2w[desdata$period == "P2"]) / length(desdata$HF_w2w[desdata$period == "P2"])), 2), "%", sep="")
+chisq.test(desdata$HF_w2w,desdata$period, correct = FALSE)
 ```
 
 
@@ -299,6 +340,7 @@ paste(round(100*(table(desdata$smoker[desdata$period == "P1"]) / length(desdata$
 
 #table(desdata$smoker[desdata$period == "P2"]) / length(desdata$smoker[desdata$period == "P2"])
 paste(round(100*(table(desdata$smoker[desdata$period == "P2"]) / length(desdata$smoker[desdata$period == "P2"])), 2), "%", sep="")
+
 ```
 
 ```{r lung descriptive}
@@ -518,11 +560,58 @@ var.test(desdata$PPV[desdata$period == "P2"], desdata$PPV[desdata$period == "P1"
 t.test(x= desdata$PPV[desdata$period == "P1"], y = desdata$PPV[desdata$period == "P2"], paired = FALSE, var.equal = TRUE, conf.level = 0.95)
 ```
 
+```{r Sug_Dur descriptive}
+desdata$Sug_Dur[desdata$period == "P1"] %>% na.omit() %>% length()
+summary(desdata$Sug_Dur[desdata$period == "P1"])
+desdata$Sug_Dur[desdata$period == "P1"] %>% na.omit() %>% sd()
+desdata$Sug_Dur[desdata$period == "P2"] %>% na.omit() %>% length()
+summary(desdata$Sug_Dur[desdata$period == "P2"])
+desdata$Sug_Dur[desdata$period == "P2"] %>% na.omit() %>% sd()
+desdata$Sug_Dur %>% na.omit() %>% length()
+summary(desdata$Sug_Dur)
+desdata$Sug_Dur %>% na.omit() %>% sd()
+```
+
+```{r Sug_Dur t}
+var.test(desdata$Sug_Dur[desdata$period == "P2"], desdata$Sug_Dur[desdata$period == "P1"])
+t.test(x= desdata$Sug_Dur[desdata$period == "P1"], y = desdata$Sug_Dur[desdata$period == "P2"], paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+```
 
 
+```{r FEV descriptive}
+desdata$FEV[desdata$period == "P1"] %>% na.omit() %>% length()
+summary(desdata$FEV[desdata$period == "P1"])
+desdata$FEV[desdata$period == "P1"] %>% na.omit() %>% sd()
+desdata$FEV[desdata$period == "P2"] %>% na.omit() %>% length()
+summary(desdata$FEV[desdata$period == "P2"])
+desdata$FEV[desdata$period == "P2"] %>% na.omit() %>% sd()
+desdata$FEV %>% na.omit() %>% length()
+summary(desdata$FEV)
+desdata$FEV %>% na.omit() %>% sd()
+```
+
+```{r FEV t}
+var.test(desdata$FEV[desdata$period == "P2"], desdata$FEV[desdata$period == "P1"])
+t.test(x= desdata$FEV[desdata$period == "P1"], y = desdata$FEV[desdata$period == "P2"], paired = FALSE, var.equal = TRUE, conf.level = 0.95)
+```
 
 
+```{r DLCO descriptive}
+desdata$DLCO[desdata$period == "P1"] %>% na.omit() %>% length()
+summary(desdata$DLCO[desdata$period == "P1"])
+desdata$DLCO[desdata$period == "P1"] %>% na.omit() %>% sd()
+desdata$DLCO[desdata$period == "P2"] %>% na.omit() %>% length()
+summary(desdata$DLCO[desdata$period == "P2"])
+desdata$DLCO[desdata$period == "P2"] %>% na.omit() %>% sd()
+desdata$DLCO %>% na.omit() %>% length()
+summary(desdata$DLCO)
+desdata$DLCO %>% na.omit() %>% sd()
+```
 
+```{r DLCO t}
+var.test(desdata$DLCO[desdata$period == "P2"], desdata$DLCO[desdata$period == "P1"])
+t.test(x= desdata$DLCO[desdata$period == "P1"], y = desdata$DLCO[desdata$period == "P2"], paired = FALSE, var.equal = TRUE, conf.level = 0.95)
+```
 
 
 ```{r IHV descriptive}
@@ -536,3 +625,101 @@ desdata$IHV %>% na.omit() %>% length()
 summary(desdata$IHV)
 desdata$IHV %>% na.omit() %>% sd()
 ```
+```{r IHV t}
+var.test(desdata$IHV[desdata$period == "P2"], desdata$IHV[desdata$period == "P1"])
+t.test(x= desdata$IHV[desdata$period == "P1"], y = desdata$IHV[desdata$period == "P2"], paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+```
+
+
+
+```{r IHV_24}
+desdata <- desdata %>% mutate( IHV_24 = IHV)
+desdata$IHV_24[desdata$IHV>24] = NA 
+
+desdata$IHV_24[desdata$period == "P1"] %>% na.omit() %>% length()
+summary(desdata$IHV_24[desdata$period == "P1"])
+desdata$IHV_24[desdata$period == "P1"] %>% na.omit() %>% sd()
+desdata$IHV_24[desdata$period == "P2"] %>% na.omit() %>% length()
+summary(desdata$IHV_24[desdata$period == "P2"])
+desdata$IHV_24[desdata$period == "P2"] %>% na.omit() %>% sd()
+desdata$IHV_24 %>% na.omit() %>% length()
+summary(desdata$IHV_24)
+desdata$IHV_24 %>% na.omit() %>% sd()
+```
+
+```{r IHV_24 t}
+var.test(desdata$IHV_24[desdata$period == "P2"], desdata$IHV_24[desdata$period == "P1"])
+t.test(x= desdata$IHV_24[desdata$period == "P1"], y = desdata$IHV_24[desdata$period == "P2"], paired = FALSE, var.equal = TRUE, conf.level = 0.95)
+```
+
+
+```{r}
+
+library(ggplot2)
+theme_set(theme_classic())
+
+hist(desdata$IHV_24, breaks = 12, plot = TRUE, freq = TRUE)
+
+barplot(desdata$IHV_24,desdata$OREhour)
+barplot(desdata$IHV_24)
+
+desdata$OREhour <- as.factor(desdata$OREhour)
+g <- ggplot(desdata, aes(desdata$OREhour, desdata$IHV_24))
+g + geom_boxplot(varwidth=T, fill="steelblue") + 
+    labs(title="Box plot", 
+         subtitle="Ventilation duration depending on time of arrival in CTICU",
+         x="Time of Arrival in CTICU",
+         y="Ventilation duration" )
+
+gg <- ggplot(desdata, aes(desdata$period, desdata$IHV_24))
+gg + geom_boxplot(varwidth=T, fill="plum") + 
+    labs(title="Box plot", 
+         subtitle="Ventilation duration depending on time of arrival in CTICU",
+         x="Time of Arrival in CTICU",
+         y="Ventilation duration" )
+```
+
+
+
+```{r}
+
+par(mfrow=c(1,1))
+hist(desdata$IHV_24[desdata$period == "P1"], main = "Histogram of Ventilation Duration in Day Shift", xlab = "Ventilation Duration for Patients Extubated within 24 hours")
+hist(desdata$IHV_24[desdata$period == "P2"], main = "Histogram of Ventilation Duration in Night Shift", xlab = "Ventilation Duration for Patients Extubated within 24 hours")
+
+```
+```{r}
+g1 <- ggplot(desdata, aes(IHV_24, fill=period))
+
+g1 + geom_histogram()
+
+g1 + geom_histogram(position = ,
+                   binwidth = 2, 
+                   col="black", 
+                   size=.1) +  # change binwidth
+  labs(title="Histogram with Auto Binning", 
+       subtitle="Engine Displacement across Vehicle Classes")  
+```
+```{r}
+data <- desdata %>% na.omit(IHV_24) %>% group_by()
+library(scales)
+ ggplot(data, aes(IHV_24)) + 
+          geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") + 
+          scale_y_continuous(labels=scales::percent) +
+          ylab("relative frequencies") +
+          facet_grid(~period)
+         
+```
+
+```{r logistic regression}
+glmdata <- desdata %>% mutate(period = ifelse( period == "P1", 0, 1)) 
+simple_logistic_fit <- glm(formula= period ~ IHV_24, family = binomial(link = "logit"), 
+    data = glmdata)
+summary(simple_logistic_fit)
+
+full_logistic_fit <- glm(formula= period ~ . , family = binomial(link = "logit"), 
+    data = glmdata)
+summary(full_logistic_fit)
+
+```
+
