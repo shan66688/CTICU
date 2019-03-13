@@ -66,7 +66,16 @@ desdata <- rawdata %>%
          DLCO = "DLCO Predicted",
          RFD = "RF-Renal Fail-Dialysis",
          PAD = "RF-Peripheral Arterial Disease",
-         IHV = "Initial Hours Ventilated"
+         IHV = "Initial Hours Ventilated",
+         Reintub =  "Re-intubated During Hospital Stay" , 
+         Post_pneu = "Post-Op-Pulm-Pneumonia", 
+         Post_throm = "Post-Op-Venous Thromboembolism-VTE",
+         Post_stroke = "Post-Op-Neuro-Stroke Perm"  ,
+         Re_ICU = "Readmission to ICU" ,
+         Hos_LOS = "LOS-Admit-Discharge" , 
+         ICU_LOS = "Total Hrs ICU",
+         Mor_disc = "Mort-DC Status"  
+         
          ) %>%  
   select(age,
        sex,
@@ -91,7 +100,17 @@ desdata <- rawdata %>%
        PAD,
        OREhour,
        IHV,
-       period)
+       period,
+       Reintub, 
+       Post_pneu, 
+       Post_throm ,
+       Post_stroke ,
+       Re_ICU , 
+       Hos_LOS, 
+       ICU_LOS, 
+       Mor_disc
+       
+       )
   
         
 
@@ -712,14 +731,40 @@ library(scales)
 ```
 
 ```{r logistic regression}
-glmdata <- desdata %>% mutate(period = ifelse( period == "P1", 0, 1)) 
+glmdata <- desdata %>% 
+  mutate(period = ifelse( period == "P1", 0, 1) ,
+                              lung = na.omit(lung),
+                              lung = ifelse(lung == "No", "No", "Yes")) %>% 
+ 
+  
+
 simple_logistic_fit <- glm(formula= period ~ IHV_24, family = binomial(link = "logit"), 
     data = glmdata)
 summary(simple_logistic_fit)
 
-full_logistic_fit <- glm(formula= period ~ . , family = binomial(link = "logit"), 
+full_logistic_fit <- glm(formula= period ~ age+
+       sex+
+       Ethnicity+
+       BMI+ 
+       PMM + 
+       PRM + 
+       PPV+
+       Reop +
+       Urgent +
+       Sug_Dur +
+       Pri_MI +
+       smoker+
+       lung+
+       RFD +
+       PAD,
+                           
+                           family = binomial(link = "logit"), 
     data = glmdata)
 summary(full_logistic_fit)
+
+```
+
+```{r}
 
 ```
 
