@@ -40,6 +40,12 @@ desdata <- rawdata %>%
   separate("Surgery duration", into = c("Sdate", "Stime"), sep= " ") %>%
   separate("OR Exit Date And Time", into = c("OREdate", "OREtime"), sep= " ") %>%
   separate("OREtime", into = c("OREhour", "OREmin","OREsec"), sep= ":") %>%
+  separate("Stime", into = c("Shour","Smin","Ssec"), sep= ":") %>% 
+  mutate (Shour=as.numeric(Shour), Smin=as.numeric(Smin), Stime = Shour+ (Smin/60),
+          OREhour = as.numeric(OREhour) ,
+          period = ifelse (OREhour <18 & OREhour >=7,  "P1", "P2"),
+          Ethnicity = NA
+          ) %>%
   rename(age = "Patient Age", 
          sex = "Sex", 
          BMI = "BMI", 
@@ -63,7 +69,8 @@ desdata <- rawdata %>%
          IHV = "Initial Hours Ventilated"
          ) %>%  
   select(age,
-       sex,  
+       sex,
+       Ethnicity,
        BMI, 
        PMM , 
        PRM , 
@@ -83,24 +90,14 @@ desdata <- rawdata %>%
        RFD ,
        PAD,
        OREhour,
-       IHV)
+       IHV,
+       period)
   
+        
 
-
-
-desdata$OREhour<- as.numeric(desdata$OREhour )
-
-
-
-
-#r create period variable
-desdata$period <- "P2"
-#desdata$period[desdata$OREhour >=18] = "P2"
-#desdata$period[desdata$OREhour < 06] ="P1"
-desdata$period[desdata$OREhour <18 & desdata$OREhour >=7 ] = "P1"
 
 # combine ethnicity
-desdata$Ethnicity <- NULL
+
 desdata$Ethnicity[rawdata$`Race - White` == "Yes"] = "White"
 desdata$Ethnicity[rawdata$`Race - Black / African American` == "Yes"] = "Black"
 desdata$Ethnicity[rawdata$`Race - Asian` == "Yes"] = "Asian"
@@ -144,6 +141,7 @@ paste(round(100*(table(desdata$sex[desdata$period == "P1"]) / length(desdata$sex
 #table(desdata$sex[desdata$period == "P2"]) / length(desdata$sex[desdata$period == "P2"])
 paste(round(100*(table(desdata$sex[desdata$period == "P2"]) / length(desdata$sex[desdata$period == "P2"])), 2), "%", sep="")
 ```
+
 ```{r sex descriptive}
 #desdata$sex[desdata$sex == "Not documented"] <- NA
 length(desdata$sex)
