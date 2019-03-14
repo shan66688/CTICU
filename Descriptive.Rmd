@@ -44,8 +44,12 @@ desdata <- rawdata %>%
   mutate (Shour=as.numeric(Shour), Smin=as.numeric(Smin), Stime = Shour+ (Smin/60),
           OREhour = as.numeric(OREhour) ,
           period = ifelse (OREhour <18 & OREhour >=7,  "P1", "P2"),
-          Ethnicity = NA
+          Ethnicity = NA,
+         
+          
+          Reintub = coalesce(`Re-intubated During Hospital Stay`, `Postop Intubation/Reintubation During Hospital Stay`)
           ) %>%
+
   rename(age = "Patient Age", 
          sex = "Sex", 
          BMI = "BMI", 
@@ -67,7 +71,6 @@ desdata <- rawdata %>%
          RFD = "RF-Renal Fail-Dialysis",
          PAD = "RF-Peripheral Arterial Disease",
          IHV = "Initial Hours Ventilated",
-         Reintub =  "Re-intubated During Hospital Stay" , 
          Post_pneu = "Post-Op-Pulm-Pneumonia", 
          Post_throm = "Post-Op-Venous Thromboembolism-VTE",
          Post_stroke = "Post-Op-Neuro-Stroke Perm"  ,
@@ -75,8 +78,7 @@ desdata <- rawdata %>%
          Hos_LOS = "LOS-Admit-Discharge" , 
          ICU_LOS = "Total Hrs ICU",
          Mor_disc = "Mort-DC Status"  
-         
-         ) %>%  
+         ) %>% 
   select(age,
        sex,
        Ethnicity,
@@ -125,6 +127,7 @@ desdata$Ethnicity[rawdata$`Race - Native Hawaiian / Pacific Islander` == "Yes"] 
 desdata$Ethnicity[rawdata$`Race - Other` == "Yes"] = "Other"
 desdata$Ethnicity[rawdata$`Race Documented` == "No"] = "No document"
 ```
+
 
 
 
@@ -734,7 +737,7 @@ library(scales)
 glmdata <- desdata %>% 
   mutate(period = ifelse( period == "P1", 0, 1) ,
                               lung = na.omit(lung),
-                              lung = ifelse(lung == "No", "No", "Yes")) %>% 
+                              lung = ifelse(lung == "No", "No", "Yes")) 
  
   
 
