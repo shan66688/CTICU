@@ -764,7 +764,49 @@ summary(full_logistic_fit)
 
 ```
 
-```{r}
+#Secondary outcome des
+```{r Hos_LOS descriptive}
+desdata$Hos_LOS[desdata$period == "P1"] %>% na.omit() %>% length()
+summary(desdata$Hos_LOS[desdata$period == "P1"])
+desdata$Hos_LOS[desdata$period == "P1"] %>% na.omit() %>% sd()
+desdata$Hos_LOS[desdata$period == "P2"] %>% na.omit() %>% length()
+summary(desdata$Hos_LOS[desdata$period == "P2"])
+desdata$Hos_LOS[desdata$period == "P2"] %>% na.omit() %>% sd()
+desdata$Hos_LOS %>% na.omit() %>% length()
+summary(desdata$Hos_LOS)
+desdata$Hos_LOS %>% na.omit() %>% sd()
+```
 
+```{r Hos_LOS t}
+var.test(desdata$Hos_LOS[desdata$period == "P2"], desdata$Hos_LOS[desdata$period == "P1"])
+t.test(x= desdata$Hos_LOS[desdata$period == "P1"], y = desdata$Hos_LOS[desdata$period == "P2"], paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+```
+
+```{r ICU_LOS descriptive}
+desdata$ICU_LOS[desdata$period == "P1"] %>% na.omit() %>% length()
+summary(desdata$ICU_LOS[desdata$period == "P1"])
+desdata$ICU_LOS[desdata$period == "P1"] %>% na.omit() %>% sd()
+desdata$ICU_LOS[desdata$period == "P2"] %>% na.omit() %>% length()
+summary(desdata$ICU_LOS[desdata$period == "P2"])
+desdata$ICU_LOS[desdata$period == "P2"] %>% na.omit() %>% sd()
+desdata$ICU_LOS %>% na.omit() %>% length()
+summary(desdata$ICU_LOS)
+desdata$ICU_LOS %>% na.omit() %>% sd()
+```
+
+```{r ICU_LOS t}
+var.test(desdata$ICU_LOS[desdata$period == "P2"], desdata$ICU_LOS[desdata$period == "P1"])
+t.test(x= desdata$ICU_LOS[desdata$period == "P1"], y = desdata$ICU_LOS[desdata$period == "P2"], paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+```
+
+```{r}
+ Reintub, 
+       Post_pneu, 
+       Post_throm ,
+       Post_stroke ,
+       Re_ICU , 
+       Hos_LOS, 
+       ICU_LOS, 
+       Mor_disc,
 ```
 
