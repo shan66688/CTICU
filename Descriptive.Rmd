@@ -47,6 +47,7 @@ desdata <- rawdata %>%
           Ethnicity = NA,
           Reintub = coalesce(`Re-intubated During Hospital Stay`, `Postop Intubation/Reintubation During Hospital Stay`),
           Mor_disc = coalesce(`Mort-DC Status`,`Discharge / Mortality Status`)
+          
           ) %>%
 
   rename(age = "Patient Age", 
@@ -110,9 +111,9 @@ desdata <- rawdata %>%
        Hos_LOS, 
        ICU_LOS, 
        Mor_disc
-       
-       )
-  
+       ) %>% 
+  mutate(IHV_24 = IHV)
+
         
 
 
@@ -128,7 +129,8 @@ desdata$Ethnicity[rawdata$`Race Documented` == "No"] = "No document"
 ```
 
 ```{r}
-glmdata <- desdata 
+glmdata <- desdata %>% mutate( IHV_24 = IHV)
+glmdata$IHV_24[desdata$IHV>24] = NA 
 ```
 
 
@@ -170,7 +172,7 @@ chisq.test(desdata$sex,desdata$period, correct = FALSE)
 ```
 
 ```{r Reop descriptive}
-glmdata <- desdata %>% 
+glmdata <- glmdata %>% 
   mutate(Reop = ifelse(Reop == "First cardiovascular surgery", "Yes", "No"))
 
 length(glmdata$Reop)
@@ -261,7 +263,7 @@ chisq.test(glmdata$Pri_MI,glmdata$period, correct = FALSE)
 
 
 ```{r HF_w2w descriptive}
-desdata$HF_w2w[desdata$HF_w2w == "Unknown"] <- NA
+glmdata$HF_w2w[desdata$HF_w2w == "Unknown"] <- NA
 length(desdata$HF_w2w)
 sum(is.na(desdata$HF_w2w))
 sum(is.na(desdata$HF_w2w)) / length(desdata$HF_w2w)
@@ -654,8 +656,7 @@ t.test(x= desdata$IHV[desdata$period == "P1"], y = desdata$IHV[desdata$period ==
 
 
 ```{r IHV_24}
-desdata <- desdata %>% mutate( IHV_24 = IHV)
-desdata$IHV_24[desdata$IHV>24] = NA 
+
 
 desdata$IHV_24[desdata$period == "P1"] %>% na.omit() %>% length()
 summary(desdata$IHV_24[desdata$period == "P1"])
@@ -685,7 +686,7 @@ barplot(desdata$IHV_24,desdata$OREhour)
 barplot(desdata$IHV_24)
 
 desdata$OREhour <- as.factor(desdata$OREhour)
-g <- ggplot(desdata, aes(desdata$OREhour, desdata$IHV_24))
+g <- ggplot(desdata, aes(desdata$OREhour, desdata$IHV))
 g + geom_boxplot(varwidth=T, fill="steelblue") + 
     labs(title="Box plot", 
          subtitle="Ventilation duration depending on time of arrival in CTICU",
@@ -733,37 +734,39 @@ library(scales)
 ```
 
 ```{r logistic regression}
-glmdata <- desdata %>% 
-  mutate(period = ifelse( period == "P1", 0, 1) ,
-                              lung = na.omit(lung),
-                              lung = ifelse(lung == "No", "No", "Yes")) 
+
  
   
-
+glmdata$period <- as.factor(glmdata$period)
 simple_logistic_fit <- glm(formula= period ~ IHV_24, family = binomial(link = "logit"), 
     data = glmdata)
 summary(simple_logistic_fit)
+```
 
-full_logistic_fit <- glm(formula= period ~ age+
+```{r backward selection}
+full_logistic_fit <- glm(formula= period ~ IHV_24+ age+
        sex+
-       Ethnicity+
-       BMI+ 
+      
+        
        PMM + 
-       PRM + 
+    
        PPV+
-       Reop +
+      
        Urgent +
        Sug_Dur +
        Pri_MI +
        smoker+
-       lung+
-       RFD +
+       
+      
        PAD,
                            
                            family = binomial(link = "logit"), 
     data = glmdata)
 summary(full_logistic_fit)
 
+```
+```{r}
+exp(5*0.02054 )
 ```
 
 #Secondary outcome des
