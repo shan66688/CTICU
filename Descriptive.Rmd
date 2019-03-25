@@ -867,21 +867,40 @@ summary(simple_logistic_fit)
 ```
 
 ```{r backward selection}
-full_logistic_fit <- glm(formula= period ~ IHV_24+ age+
-       sex+
+full_logistic_fit <- glm(formula= period ~ IHV_24+ 
+       age+
+       Ethnicity +
+       BMI +
+       PMM +
+       PRM , 
+       PPV,
+       Reop ,
+       Urgent ,
+       Sug_Dur ,
+       Pri_MI ,
+   
       
-        
-       PMM + 
-    
-       PPV+
-      
-       Urgent +
-       Sug_Dur +
-       Pri_MI +
-       smoker+
-       
-      
+       smoker,
+       lung,
+       PFT,
+       FEV + 
+       RFD ,
        PAD,
+       OREhour,
+       IHV,
+       period,
+       Reintub, 
+       Post_pneu, 
+       Post_throm ,
+       Post_stroke ,
+       Re_ICU , 
+       Hos_LOS, 
+       ICU_LOS, 
+       Mor_disc,
+       POBPT,
+       TBU,
+       XCT,
+       CPBT
                            
                            family = binomial(link = "logit"), 
     data = glmdata)
