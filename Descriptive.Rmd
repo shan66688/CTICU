@@ -211,6 +211,35 @@ chisq.test(desdata$sex,desdata$period, correct = FALSE)
 
 ```
 
+```{r Ethnicity descriptive}
+#desdata$Ethnicity[desdata$Ethnicity == "Not documented"] <- NA
+length(desdata$Ethnicity)
+sum(is.na(desdata$Ethnicity))
+sum(is.na(desdata$Ethnicity)) / length(desdata$Ethnicity)
+table(desdata$Ethnicity)
+
+#table(desdata$Ethnicity) / length(desdata$Ethnicity)
+paste(round(100*(table(desdata$Ethnicity) / 861), 2), "%", sep="")
+
+length(desdata$Ethnicity[desdata$period == "P1"])
+length(desdata$Ethnicity[desdata$period == "P2"])
+
+sum(is.na(desdata$Ethnicity[desdata$period == "P1"]))
+sum(is.na(desdata$Ethnicity[desdata$period == "P2"]))
+
+table(desdata$Ethnicity[desdata$period == "P1"]) 
+table(desdata$Ethnicity[desdata$period == "P2"]) 
+
+#table(desdata$Ethnicity[desdata$period == "P1"]) / length(desdata$Ethnicity[desdata$period == "P1"])
+paste(round(100*(table(desdata$Ethnicity[desdata$period == "P1"]) / length(desdata$Ethnicity[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$Ethnicity[desdata$period == "P2"]) / length(desdata$Ethnicity[desdata$period == "P2"])
+paste(round(100*(table(desdata$Ethnicity[desdata$period == "P2"]) / length(desdata$Ethnicity[desdata$period == "P2"])), 2), "%", sep="")
+
+
+chisq.test(desdata$Ethnicity,desdata$period, correct = FALSE)
+```
+
 ```{r Reop descriptive}
 glmdata <- glmdata %>% 
   mutate(Reop = ifelse(Reop == "First cardiovascular surgery", "Yes", "No"))
@@ -871,6 +900,8 @@ full_logistic_fit <- glm(formula= period ~ IHV_24+ age+Ethnicity +BMI +PMM +PRM 
 summary(full_logistic_fit)
 
 ```
+
+
 ```{r}
 exp(5*0.02054 )
 ```
