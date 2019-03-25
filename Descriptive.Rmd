@@ -211,33 +211,33 @@ chisq.test(desdata$sex,desdata$period, correct = FALSE)
 
 ```
 
-```{r Ethnicity descriptive}
-#desdata$Ethnicity[desdata$Ethnicity == "Not documented"] <- NA
-length(desdata$Ethnicity)
-sum(is.na(desdata$Ethnicity))
-sum(is.na(desdata$Ethnicity)) / length(desdata$Ethnicity)
-table(desdata$Ethnicity)
+```{r Ethnicity glmcriptive}
+glmdata$Ethnicity[glmdata$Ethnicity == "No document"] <- NA
+length(glmdata$Ethnicity)
+sum(is.na(glmdata$Ethnicity))
+sum(is.na(glmdata$Ethnicity)) / length(glmdata$Ethnicity)
+table(glmdata$Ethnicity)
 
-#table(desdata$Ethnicity) / length(desdata$Ethnicity)
-paste(round(100*(table(desdata$Ethnicity) / 861), 2), "%", sep="")
+#table(glmdata$Ethnicity) / length(glmdata$Ethnicity)
+paste(round(100*(table(glmdata$Ethnicity) / 861), 2), "%", sep="")
 
-length(desdata$Ethnicity[desdata$period == "P1"])
-length(desdata$Ethnicity[desdata$period == "P2"])
+length(glmdata$Ethnicity[glmdata$period == "P1"])
+length(glmdata$Ethnicity[glmdata$period == "P2"])
 
-sum(is.na(desdata$Ethnicity[desdata$period == "P1"]))
-sum(is.na(desdata$Ethnicity[desdata$period == "P2"]))
+sum(is.na(glmdata$Ethnicity[glmdata$period == "P1"]))
+sum(is.na(glmdata$Ethnicity[glmdata$period == "P2"]))
 
-table(desdata$Ethnicity[desdata$period == "P1"]) 
-table(desdata$Ethnicity[desdata$period == "P2"]) 
+table(glmdata$Ethnicity[glmdata$period == "P1"]) 
+table(glmdata$Ethnicity[glmdata$period == "P2"]) 
 
-#table(desdata$Ethnicity[desdata$period == "P1"]) / length(desdata$Ethnicity[desdata$period == "P1"])
-paste(round(100*(table(desdata$Ethnicity[desdata$period == "P1"]) / length(desdata$Ethnicity[desdata$period == "P1"])), 2), "%", sep="")
+#table(glmdata$Ethnicity[glmdata$period == "P1"]) / length(glmdata$Ethnicity[glmdata$period == "P1"])
+paste(round(100*(table(glmdata$Ethnicity[glmdata$period == "P1"]) / length(glmdata$Ethnicity[glmdata$period == "P1"])), 2), "%", sep="")
 
-#table(desdata$Ethnicity[desdata$period == "P2"]) / length(desdata$Ethnicity[desdata$period == "P2"])
-paste(round(100*(table(desdata$Ethnicity[desdata$period == "P2"]) / length(desdata$Ethnicity[desdata$period == "P2"])), 2), "%", sep="")
+#table(glmdata$Ethnicity[glmdata$period == "P2"]) / length(glmdata$Ethnicity[glmdata$period == "P2"])
+paste(round(100*(table(glmdata$Ethnicity[glmdata$period == "P2"]) / length(glmdata$Ethnicity[glmdata$period == "P2"])), 2), "%", sep="")
 
 
-chisq.test(desdata$Ethnicity,desdata$period, correct = FALSE)
+chisq.test(glmdata$Ethnicity,glmdata$period, correct = FALSE)
 ```
 
 ```{r Reop descriptive}
