@@ -211,8 +211,11 @@ chisq.test(desdata$sex,desdata$period, correct = FALSE)
 
 ```
 
-```{r Ethnicity glmcriptive}
+```{r Ethnicity descriptive}
 glmdata$Ethnicity[glmdata$Ethnicity == "No document"] <- NA
+glmdata$Ethnicity <- as.factor(glmdata$Ethnicity) %>%
+  relevel(glmdata$Ethnicity, ref="White")
+
 length(glmdata$Ethnicity)
 sum(is.na(glmdata$Ethnicity))
 sum(is.na(glmdata$Ethnicity)) / length(glmdata$Ethnicity)
@@ -894,11 +897,47 @@ simple_logistic_fit <- glm(formula= period ~ IHV_24, family = binomial(link = "l
     data = glmdata)
 summary(simple_logistic_fit)
 ```
-
+#Backward selection
+##Full model
 ```{r backward selection}
 full_logistic_fit <- glm(formula= period ~ IHV_24+ age+Ethnicity +BMI +PMM +PRM + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung+ PFT +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(full_logistic_fit)
 
+```
+
+```{r remove age }
+back_logistic_fit_1 <- glm(formula= period ~ IHV_24+Ethnicity +BMI +PMM +PRM + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung+ PFT +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+summary(back_logistic_fit_1)
+```
+
+```{r remove ethnicity }
+back_logistic_fit_2 <- glm(formula= period ~ IHV_24 +BMI +PMM +PRM + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung+ PFT +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+summary(back_logistic_fit_2)
+```
+
+```{r remove reop }
+back_logistic_fit_3 <- glm(formula= period ~ IHV_24 + Ethnicity +BMI +PMM +PRM + PPV +Urgent +Sug_Dur +Pri_MI +smoker+lung+ PFT +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+summary(back_logistic_fit_3)
+```
+
+```{r remove PRM }
+back_logistic_fit_4 <- glm(formula= period ~ IHV_24  + Ethnicity+BMI +PMM + PPV+Urgent +Sug_Dur +Pri_MI +smoker+lung+ PFT +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+summary(back_logistic_fit_4)
+```
+
+```{r remove BMI }
+back_logistic_fit_5 <- glm(formula= period ~ IHV_24 + Ethnicity +PMM + PPV+Urgent +Sug_Dur +Pri_MI +smoker+lung+ PFT +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+summary(back_logistic_fit_5)
+```
+
+```{r remove Urgent }
+back_logistic_fit_5 <- glm(formula= period ~ IHV_24 + Ethnicity +PMM + PPV +Sug_Dur +Pri_MI +smoker+lung+ PFT +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+summary(back_logistic_fit_5)
+```
+
+```{r remove TBU}
+back_logistic_fit_6 <- glm(formula= period ~ IHV_24 + Ethnicity +PMM + PPV +Sug_Dur +Pri_MI +smoker+lung+ PFT +RFD + PAD+ POBPT+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+summary(back_logistic_fit_6)
 ```
 
 
