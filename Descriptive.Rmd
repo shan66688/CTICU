@@ -771,7 +771,7 @@ var.test(desdata$CPBT[desdata$period == "P2"], desdata$CPBT[desdata$period == "P
 t.test(x= desdata$CPBT[desdata$period == "P1"], y = desdata$CPBT[desdata$period == "P2"], paired = FALSE, var.equal = TRUE, conf.level = 0.95)
 ```
 
-
+#Outcome
 ```{r IHV descriptive}
 desdata$IHV[desdata$period == "P1"] %>% na.omit() %>% length()
 summary(desdata$IHV[desdata$period == "P1"])
@@ -950,17 +950,25 @@ back_logistic_fit_13 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Sug_D
 summary(back_logistic_fit_13)
 ```
 ```{r remove PPV }
-back_logistic_fit_13 <- glm(formula= period ~ IHV_24+Ethnicity +PMM  +Sug_Dur +smoker+ PFT , family = binomial(link = "logit"), data = glmdata)
-summary(back_logistic_fit_13)
+back_logistic_fit_14 <- glm(formula= period ~ IHV_24+Ethnicity +PMM  +Sug_Dur +smoker+ PFT , family = binomial(link = "logit"), data = glmdata)
+summary(back_logistic_fit_14)
 ```
 ```{r remove PMM }
-back_logistic_fit_13 <- glm(formula= period ~ IHV_24+Ethnicity   +Sug_Dur +smoker+ PFT , family = binomial(link = "logit"), data = glmdata)
-summary(back_logistic_fit_13)
+back_logistic_fit_15 <- glm(formula= period ~ IHV_24+Ethnicity   +Sug_Dur +smoker+ PFT , family = binomial(link = "logit"), data = glmdata)
+summary(back_logistic_fit_15)
 ```
 
 ```{r remove Sug_dur }
-back_logistic_fit_13 <- glm(formula= period ~ IHV_24+Ethnicity +smoker+ PFT , family = binomial(link = "logit"), data = glmdata)
-summary(back_logistic_fit_13)
+back_logistic_fit_16 <- glm(formula= period ~ IHV_24+Ethnicity +smoker+ PFT , family = binomial(link = "logit"), data = glmdata)
+summary(back_logistic_fit_16)
+```
+```{r Final model}
+final_logistic_fit <- back_logistic_fit_15
+final_logistic_fit$coefficients
+
+IHV_24_OR <- exp(final_logistic_fit$coefficients[2]*5) %>% print()
+rest_OR <- exp(final_logistic_fit$coefficients[3:10]) %>% print()
+exp(0.02094841)
 ```
 
 ```{r}
@@ -1034,6 +1042,35 @@ paste(round(100*(table(glmdata$Reintub[glmdata$period == "P1"]) / length(glmdata
 paste(round(100*(table(glmdata$Reintub[glmdata$period == "P2"]) / length(glmdata$Reintub[glmdata$period == "P2"])), 2), "%", sep="")
 
 chisq.test(glmdata$Reintub,glmdata$period, correct = FALSE)
+```
+
+```{r Post_pneu descriptive}
+#desdata$Post_pneu[desdata$Post_pneu == "Not documented"] <- NA
+length(desdata$Post_pneu)
+sum(is.na(desdata$Post_pneu))
+sum(is.na(desdata$Post_pneu)) / length(desdata$Post_pneu)
+table(desdata$Post_pneu)
+
+#table(desdata$Post_pneu) / length(desdata$Post_pneu)
+paste(round(100*(table(desdata$Post_pneu) / 861), 2), "%", sep="")
+
+length(desdata$Post_pneu[desdata$period == "P1"])
+length(desdata$Post_pneu[desdata$period == "P2"])
+
+sum(is.na(desdata$Post_pneu[desdata$period == "P1"]))
+sum(is.na(desdata$Post_pneu[desdata$period == "P2"]))
+
+table(desdata$Post_pneu[desdata$period == "P1"]) 
+table(desdata$Post_pneu[desdata$period == "P2"]) 
+
+#table(desdata$Post_pneu[desdata$period == "P1"]) / length(desdata$Post_pneu[desdata$period == "P1"])
+paste(round(100*(table(desdata$Post_pneu[desdata$period == "P1"]) / length(desdata$Post_pneu[desdata$period == "P1"])), 2), "%", sep="")
+
+#table(desdata$Post_pneu[desdata$period == "P2"]) / length(desdata$Post_pneu[desdata$period == "P2"])
+paste(round(100*(table(desdata$Post_pneu[desdata$period == "P2"]) / length(desdata$Post_pneu[desdata$period == "P2"])), 2), "%", sep="")
+
+
+fisher.test(desdata$Post_pneu,desdata$period)
 ```
 
 ```{r Re_ICU  descriptive}
