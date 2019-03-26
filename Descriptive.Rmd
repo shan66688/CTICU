@@ -175,6 +175,26 @@ desdata <- desdata %>% mutate( IHV_24 = IHV)
 desdata$IHV_24[desdata$IHV>24] = NA 
 
 glmdata <- desdata
+
+glmdata$Ethnicity[glmdata$Ethnicity == "No document"] <- NA
+glmdata$Ethnicity <- as.factor(glmdata$Ethnicity) %>%
+  relevel(glmdata$Ethnicity, ref="White")
+
+glmdata <- glmdata %>% 
+  mutate(Reop = ifelse(Reop == "First cardiovascular surgery", "Yes", "No"))
+
+glmdata$Pri_MI[glmdata$Pri_MI == "Unknown"] <- NA
+
+glmdata$smoker <- "Yes"
+glmdata$smoker[desdata$smoker == "Smoking status unknown"] <- NA
+glmdata$smoker[desdata$smoker == "Never smoker"] <- "No"
+
+glmdata$HF_w2w[desdata$HF_w2w == "Unknown"] <- NA
+glmdata$lung <- "Yes"
+glmdata$lung[desdata$lung == "No"] <- "No"
+glmdata$lung[desdata$lung == "Unknown"] <- NA
+glmdata$PFT[desdata$PFT == "Unknown"] <- NA
+glmdata$RFD[desdata$RFD == "Unknown"] <- NA
 ```
 
 
@@ -246,8 +266,7 @@ chisq.test(glmdata$Ethnicity,glmdata$period, correct = FALSE)
 ```
 
 ```{r Reop descriptive}
-glmdata <- glmdata %>% 
-  mutate(Reop = ifelse(Reop == "First cardiovascular surgery", "Yes", "No"))
+
 
 length(glmdata$Reop)
 sum(is.na(glmdata$Reop))
@@ -308,7 +327,7 @@ chisq.test(desdata$Urgent,desdata$period, correct = FALSE)
 
 
 ```{r Pri_MI descriptive}
-glmdata$Pri_MI[glmdata$Pri_MI == "Unknown"] <- NA
+
 length(glmdata$Pri_MI)
 sum(is.na(glmdata$Pri_MI))
 sum(is.na(glmdata$Pri_MI)) / length(glmdata$Pri_MI)
@@ -337,7 +356,7 @@ chisq.test(glmdata$Pri_MI,glmdata$period, correct = FALSE)
 
 
 ```{r HF_w2w descriptive}
-glmdata$HF_w2w[desdata$HF_w2w == "Unknown"] <- NA
+
 length(desdata$HF_w2w)
 sum(is.na(desdata$HF_w2w))
 sum(is.na(desdata$HF_w2w)) / length(desdata$HF_w2w)
@@ -391,9 +410,7 @@ paste(round(100*(table(desdata$NYHA[desdata$period == "P2"]) / length(desdata$NY
 ```
 
 ```{r smoker descriptive}
-glmdata$smoker <- "Yes"
-glmdata$smoker[desdata$smoker == "Smoking status unknown"] <- NA
-glmdata$smoker[desdata$smoker == "Never smoker"] <- "No"
+
 length(glmdata$smoker)
 sum(is.na(glmdata$smoker))
 sum(is.na(glmdata$smoker)) / length(glmdata$smoker)
@@ -421,11 +438,6 @@ chisq.test(glmdata$smoker,glmdata$period, correct = FALSE)
 ```
 
 ```{r lung descriptive}
-
-glmdata$lung <- "Yes"
-glmdata$lung[desdata$lung == "No"] <- "No"
-glmdata$lung[desdata$lung == "Unknown"] <- NA
-
 length(glmdata$lung)
 sum(is.na(glmdata$lung))
 sum(is.na(glmdata$lung)) / length(glmdata$lung)
@@ -453,9 +465,6 @@ chisq.test(glmdata$lung,glmdata$period, correct = FALSE)
 ```
 
 ```{r PFT descriptive}
-
-
-glmdata$PFT[desdata$PFT == "Unknown"] <- NA
 
 length(glmdata$PFT)
 sum(is.na(glmdata$PFT))
@@ -510,9 +519,6 @@ paste(round(100*(table(desdata$DLCOT[desdata$period == "P2"]) / length(desdata$D
 ```
 
 ```{r RFD descriptive}
-
-
-glmdata$RFD[desdata$RFD == "Unknown"] <- NA
 
 length(glmdata$RFD)
 sum(is.na(glmdata$RFD))
@@ -817,11 +823,9 @@ theme_set(theme_classic())
 
 hist(desdata$IHV_24, breaks = 12, plot = TRUE, freq = TRUE)
 
-barplot(desdata$IHV_24,desdata$OREhour)
-barplot(desdata$IHV_24)
 
-desdata$OREhour <- as.factor(desdata$OREhour)
-g <- ggplot(desdata, aes(desdata$OREhour, desdata$IHV_24))
+plotdata <- desdata %>% mutate(OREhour = as.factor(OREhour))
+g <- ggplot(plotdata, aes(plotdata$OREhour, plotdata$IHV_24))
 g + geom_boxplot(varwidth=T, fill="steelblue") + 
     labs(title="Box plot", 
          subtitle="Ventilation duration depending on time of arrival in CTICU",
@@ -838,7 +842,7 @@ gg + geom_boxplot(varwidth=T, fill="plum") +
 
 
 
-```{r}
+```{r IHV_hist}
 
 par(mfrow=c(1,1))
 hist(desdata$IHV_24[desdata$period == "P1"], main = "Histogram of Ventilation Duration in Day Shift", xlab = "Ventilation Duration for Patients Extubated within 24 hours")
@@ -857,17 +861,9 @@ g1 + geom_histogram(position = ,
   labs(title="Histogram with Auto Binning", 
        subtitle="Engine Displacement across Vehicle Classes")  
 ```
-```{r}
-data <- desdata %>% na.omit(IHV_24) %>% group_by()
-library(scales)
- ggplot(data, aes(IHV_24)) + 
-          geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") + 
-          scale_y_continuous(labels=scales::percent) +
-          ylab("relative frequencies") +
-          facet_grid(~period)
-         
-```
 
+#logistic regression
+##simple regression
 ```{r logistic regression}
 
  
@@ -877,6 +873,16 @@ simple_logistic_fit <- glm(formula= period ~ IHV_24, family = binomial(link = "l
     data = glmdata)
 summary(simple_logistic_fit)
 ```
+```{r}
+exp(0.02054*5)
+```
+
+```{r}
+test_logistic_fit <- glm(formula= period ~ IHV_24 + Sug_Dur + smoker +Ethnicity +XCT  , family = binomial(link = "logit"), 
+    data = glmdata)
+summary(test_logistic_fit)
+```
+
 #Backward selection
 ##Full model
 ```{r backward selection}
@@ -964,6 +970,7 @@ summary(back_logistic_fit_16)
 ```
 ```{r Final model}
 final_logistic_fit <- back_logistic_fit_15
+summary(final_logistic_fit)
 final_logistic_fit$coefficients
 
 IHV_24_OR <- exp(final_logistic_fit$coefficients[2]*5) %>% print()
@@ -991,6 +998,14 @@ desdata$Hos_LOS %>% na.omit() %>% sd()
 ```{r Hos_LOS t}
 var.test(desdata$Hos_LOS[desdata$period == "P2"], desdata$Hos_LOS[desdata$period == "P1"])
 t.test(x= desdata$Hos_LOS[desdata$period == "P1"], y = desdata$Hos_LOS[desdata$period == "P2"], paired = FALSE, var.equal = FALSE, conf.level = 0.95)
+```
+
+```{r Hos_LOS hist}
+
+par(mfrow=c(1,1))
+hist(desdata$Hos_LOS[desdata$period == "P1"], main = "Histogram of Ventilation Duration in Day Shift", breaks = 24, xlab = "Hospital LOS")
+hist(desdata$Hos_LOS[desdata$period == "P2"], main = "Histogram of Ventilation Duration in Night Shift",breaks = 12, xlab = "Hospital LOS")
+
 ```
 
 ```{r ICU_LOS descriptive}
