@@ -3,8 +3,9 @@
 ```{r backward selection}
 full_logistic_fit <- glm(formula= period ~ IHV_24+ age+Ethnicity +BMI +PMM +PRM + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(full_logistic_fit)
-
 ```
+
+
 
 ```{r remove age }
 back_logistic_fit_1 <- glm(formula= period ~ IHV_24+Ethnicity +BMI +PMM +PRM + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
@@ -127,3 +128,12 @@ test_logistic_fit <- glm(formula= period ~ IHV_24 + Sug_Dur + smoker +Ethnicity 
 summary(test_logistic_fit)
 ```
 
+```{r backward selection}
+full_logistic_fit <- glm(formula= period ~ IHV_24+Ethnicity  + Sug_Dur +smoker , family = binomial(link = "logit"), data = glmdata)
+summary(full_logistic_fit)
+
+
+exp(full_logistic_fit$coefficients)
+exp(0.02303*5)
+
+```

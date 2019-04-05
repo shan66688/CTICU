@@ -153,7 +153,7 @@ desdata <- rawdata %>%
        XCT,
        CPBT
        ) %>% 
-  mutate(IHV_24 = IHV)
+  mutate(IHV_24 = IHV, ICU_LOS = ICU_LOS/24)
 
         
 
@@ -170,14 +170,16 @@ desdata$Ethnicity[rawdata$`Race Documented` == "No"] = "No document"
 ```
 
 
-```{r}
+```{r glmdata}
 desdata <- desdata %>% mutate( IHV_24 = IHV)
 desdata$IHV_24[desdata$IHV>24] = NA 
 
 glmdata <- desdata
 
 glmdata$Ethnicity[glmdata$Ethnicity == "No document"] <- NA
-glmdata$Ethnicity <- as.factor(glmdata$Ethnicity) %>%
+glmdata$Ethnicity[glmdata$Ethnicity == "Hawaiian"] <- "Other"
+glmdata$Ethnicity[glmdata$Ethnicity == "American Indian"] <- "Other"
+glmdata$Ethnicity <- as.factor(glmdata$Ethnicity) %>% 
   relevel(glmdata$Ethnicity, ref="White")
 
 glmdata <- glmdata %>% 
@@ -816,6 +818,39 @@ t.test(x= desdata$IHV_24[desdata$period == "P1"], y = desdata$IHV_24[desdata$per
 ```
 
 
+
+```{r IHV_16}
+
+desdata <- desdata %>% mutate( IHV_16 = IHV)
+desdata$IHV_16[desdata$IHV>=16] = NA 
+
+ggg <- ggplot(desdata, aes(desdata$period, desdata$IHV_16))
+ggg + geom_boxplot(varwidth=T, fill="plum") + 
+    labs(title="Box plot", 
+         subtitle="Ventilation duration depending on time of arrival in CTICU",
+         x="Time of Arrival in CTICU",
+         y="Ventilation duration" )
+
+```
+
+```{r}
+
+desdata$IHV_16[desdata$period == "P1"] %>% na.omit() %>% length()
+summary(desdata$IHV_16[desdata$period == "P1"])
+desdata$IHV_16[desdata$period == "P1"] %>% na.omit() %>% sd()
+desdata$IHV_16[desdata$period == "P2"] %>% na.omit() %>% length()
+summary(desdata$IHV_16[desdata$period == "P2"])
+desdata$IHV_16[desdata$period == "P2"] %>% na.omit() %>% sd()
+desdata$IHV_16 %>% na.omit() %>% length()
+summary(desdata$IHV_16)
+desdata$IHV_16 %>% na.omit() %>% sd()
+
+var.test(desdata$IHV_16[desdata$period == "P2"], desdata$IHV_16[desdata$period == "P1"])
+t.test(x= desdata$IHV_16[desdata$period == "P1"], y = desdata$IHV_16[desdata$period == "P2"], paired = FALSE, var.equal = TRUE, conf.level = 0.95)
+```
+
+
+
 ```{r}
 
 library(ggplot2)
@@ -845,8 +880,8 @@ gg + geom_boxplot(varwidth=T, fill="plum") +
 ```{r IHV_hist}
 
 par(mfrow=c(1,1))
-hist(desdata$IHV_24[desdata$period == "P1"], main = "Histogram of Ventilation Duration in Day Shift", xlab = "Ventilation Duration for Patients Extubated within 24 hours")
-hist(desdata$IHV_24[desdata$period == "P2"], main = "Histogram of Ventilation Duration in Night Shift", xlab = "Ventilation Duration for Patients Extubated within 24 hours")
+hist(desdata$IHV[desdata$period == "P1"], main = "Histogram of Ventilation Duration in Day Shift", xlab = "Ventilation Duration for Patients Extubated within 24 hours")
+hist(desdata$IHV[desdata$period == "P2"], main = "Histogram of Ventilation Duration in Night Shift", xlab = "Ventilation Duration for Patients Extubated within 24 hours")
 
 ```
 ```{r}
@@ -885,8 +920,34 @@ summary(test_logistic_fit)
 
 #Backward selection
 ##Full model
+
 ```{r backward selection}
-full_logistic_fit <- glm(formula= period ~ IHV_24+ age+Ethnicity +BMI +PMM +PRM + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung+ PFT +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+full_logistic_fit <- glm(formula= period ~ IHV_24+Ethnicity + PPV   +smoker+ PFT  + XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+summary(full_logistic_fit)
+exp(full_logistic_fit$coefficients)
+
+exp(0.020902 *5)
+exp(-0.372881 * 0.01)
+exp(-0.011155 *20)
+exp(0.008767  *30)
+```
+
+```{r}
+back_logistic_fit <- glm(formula= period ~ IHV_24 + PPV   +smoker+ PFT  + PAD+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+summary(back_logistic_fit)
+exp(back_logistic_fit$coefficients)
+```
+
+```{r}
+back_logistic_fit <- glm(formula= period ~ IHV_24   + PPV   +smoker+ PFT  + PAD+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+summary(back_logistic_fit)
+exp(back_logistic_fit$coefficients)
+```
+
+
+
+```{r backward selection}
+full_logistic_fit <- glm(formula= period ~ IHV_24+Ethnicity+ age +BMI +PMM +PRM + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung+ PFT +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(full_logistic_fit)
 
 ```
@@ -1008,6 +1069,14 @@ hist(desdata$Hos_LOS[desdata$period == "P2"], main = "Histogram of Ventilation D
 
 ```
 
+```{r Hos_LOS logistic}
+Hos_LOS_fit <- glm(formula= period ~ Hos_LOS, family = binomial(link = "logit"), 
+    data = glmdata)
+summary(Hos_LOS_fit)
+exp(0.009537*10)
+```
+
+
 ```{r ICU_LOS descriptive}
 desdata$ICU_LOS[desdata$period == "P1"] %>% na.omit() %>% length()
 summary(desdata$ICU_LOS[desdata$period == "P1"])
@@ -1027,6 +1096,13 @@ t.test(x= desdata$ICU_LOS[desdata$period == "P1"], y = desdata$ICU_LOS[desdata$p
 ```{r ICU_LOS logistic}
 logistic_fit_ICU_LOS <- glm(formula= period ~ ICU_LOS+Ethnicity +smoker+ PFT , family = binomial(link = "logit"), data = glmdata)
 summary(logistic_fit_ICU_LOS)
+```
+
+```{r ICU_LOS logistic}
+ICU_LOS_fit <- glm(formula= period ~ ICU_LOS, family = binomial(link = "logit"), 
+    data = glmdata)
+summary(ICU_LOS_fit)
+exp(-0.01584 * 5)
 ```
 
 ```{r Reintub descriptive}
@@ -1056,7 +1132,14 @@ paste(round(100*(table(glmdata$Reintub[glmdata$period == "P1"]) / length(glmdata
 #table(glmdata$Reintub[glmdata$period == "P2"]) / length(glmdata$Reintub[glmdata$period == "P2"])
 paste(round(100*(table(glmdata$Reintub[glmdata$period == "P2"]) / length(glmdata$Reintub[glmdata$period == "P2"])), 2), "%", sep="")
 
-chisq.test(glmdata$Reintub,glmdata$period, correct = FALSE)
+fisher.test(glmdata$Reintub,glmdata$period)
+```
+
+```{r Reintub logistic}
+Reintub_fit <- glm(formula= period ~ Reintub, family = binomial(link = "logit"), 
+    data = glmdata)
+summary(Reintub_fit)
+exp( -0.45347)
 ```
 
 ```{r Post_pneu descriptive}
@@ -1118,7 +1201,14 @@ paste(round(100*(table(glmdata$Re_ICU [glmdata$period == "P1"]) / length(na.omit
 #table(glmdata$Re_ICU [glmdata$period == "P2"]) / length(glmdata$Re_ICU [glmdata$period == "P2"])
 paste(round(100*(table(glmdata$Re_ICU [glmdata$period == "P2"]) / length(na.omit(glmdata$Re_ICU [glmdata$period == "P2"]))), 2), "%", sep="")
 
-chisq.test(glmdata$Re_ICU ,glmdata$period, correct = FALSE)
+fisher.test(glmdata$Re_ICU ,glmdata$period)
+```
+
+```{r Re_ICU logistic}
+Re_ICU_fit <- glm(formula= period ~ Re_ICU, family = binomial(link = "logit"), 
+    data = glmdata)
+summary(Re_ICU_fit)
+exp( 0.20930)
 ```
 
 ```{r Mor_disc  descriptive}
@@ -1154,15 +1244,17 @@ paste(round(100*(table(glmdata$Mor_disc [glmdata$period == "P2"]) / length(na.om
 fisher.test(glmdata$Mor_disc ,glmdata$period)
 ```
 
+```{r Mor_disc logistic}
+Mor_disc_fit <- glm(formula= period ~ Mor_disc, family = binomial(link = "logit"), 
+    data = glmdata)
+summary(Mor_disc_fit)
+exp( -12.91105)
+```
 
 #```{r}
 Reintub,
-Post_pneu, 
-Post_throm ,
-Post_stroke ,
 Re_ICU , 
-Hos_LOS, 
-ICU_LOS, 
+
 Mor_disc,
 #```
 

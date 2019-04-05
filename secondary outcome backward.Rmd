@@ -5,131 +5,178 @@ date: "3/26/2019"
 output: html_document
 ---
 
+Hos_LOS, 
+ICU_LOS, 
+
 #Backward selection
 ##Full model
+
+
+```{r HOS LOS regression}
+selected_logistic_fit <- glm(formula= period ~ Hos_LOS +Ethnicity  +PMM  + PPV  +smoker+ PFT  + POBPT+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+summary(selected_logistic_fit)
+exp(selected_logistic_fit$coefficients)
+exp(-0.004442 * 10)
+exp(5.184470 * 0.1)
+exp(-7.003069 * 0.1)
+exp(-0.013641* 20)
+exp(0.010557 * 30)
+```
+
+
+
+
+
++ age+Ethnicity +BMI +PMM +PRM + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT
+
 ```{r backward selection}
-full_logistic_fit <- glm(formula= period ~ IHV_24+ age+Ethnicity +BMI +PMM +PRM + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+full_logistic_fit <- glm(formula= period ~ Hos_LOS+ age+Ethnicity +BMI +PMM +PRM + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(full_logistic_fit)
+```
+
+```{r ICU LOS regression}
+ICU_logistic_fit <- glm(formula= period ~ ICU_LOS+Ethnicity +PMM   +smoker + POBPT, family = binomial(link = "logit"), data = glmdata)
+summary(ICU_logistic_fit)
+exp(ICU_logistic_fit$coefficients)
+exp(5*-0.03995)
+exp(0.1*1.22748)
 
 ```
 
-```{r remove age }
-back_logistic_fit_1 <- glm(formula= period ~ IHV_24+Ethnicity +BMI +PMM +PRM + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+```{r Reintub regression}
+reintub_logistic_fit <- glm(formula= period ~ Reintub +Ethnicity +PMM     +smoker+lung, family = binomial(link = "logit"), data = glmdata)
+summary(reintub_logistic_fit)
+exp(reintub_logistic_fit$coefficients)
+exp(1.3624*0.1)
+```
+
+```{r Re_ICU regression}
+Re_ICU_logistic_fit <- glm(formula= period ~ Re_ICU +Ethnicity +PMM  + PPV +Sug_Dur +Pri_MI +lung  + POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+summary(Re_ICU_logistic_fit)
+exp(Re_ICU_logistic_fit$coefficients)
+exp(4.711545 * 0.1)
+exp(-6.065551 * 0.1)
+exp(-0.016698 *20)
+exp(0.015798 *30)
+```
+
+```{r remove PRM }
+back_logistic_fit_1 <- glm(formula= period ~ Hos_LOS+ age+Ethnicity +BMI +PMM  + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_1)
 ```
 
 ```{r remove BMI }
-back_logistic_fit_2 <- glm(formula= period ~ IHV_24+Ethnicity +PMM +PRM + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+back_logistic_fit_2 <- glm(formula= period ~ Hos_LOS+ age+Ethnicity +PMM  + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_2)
 ```
 
-```{r remove Reop }
-back_logistic_fit_3 <- glm(formula= period ~ IHV_24+Ethnicity + PRM +PMM + PPV+Urgent +Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+```{r remove TBU }
+back_logistic_fit_3 <- glm(formula= period ~ Hos_LOS+ age+Ethnicity +PMM  + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_3)
 ```
 
 
-```{r remove PRM }
-back_logistic_fit_4 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV+Urgent +Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+```{r remove LUNG }
+back_logistic_fit_4 <- glm(formula= period ~ Hos_LOS+ age+Ethnicity +PMM  + PPV+ Reop+Urgent +Sug_Dur +Pri_MI +smoker +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_4)
 ```
 
-```{r remove TBU }
-back_logistic_fit_5 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Urgent+Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+```{r remove SMOKER }
+back_logistic_fit_5 <- glm(formula= period ~ Hos_LOS+ age+Ethnicity +PMM  + PPV+ Reop+Urgent +Sug_Dur +Pri_MI  +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_5)
 ```
 
 
 ```{r remove Urgent }
-back_logistic_fit_6 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Sug_Dur +Pri_MI +smoker+lung +RFD + PAD+ POBPT+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+back_logistic_fit_6 <- glm(formula= period ~ Hos_LOS+ age+Ethnicity +PMM  + PPV+ Reop +Sug_Dur +Pri_MI +smoker +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_6)
 ```
-```{r remove lung }
-back_logistic_fit_7 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Sug_Dur +Pri_MI  +smoker +RFD + PAD+ POBPT+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+```{r remove Reop }
+back_logistic_fit_7 <- glm(formula= period ~ Hos_LOS+ age+Ethnicity +PMM  + PPV+Urgent +Sug_Dur +Pri_MI +smoker +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_7)
 ```
-```{r remove Smoker }
-back_logistic_fit_8 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Sug_Dur +Pri_MI +RFD  + PAD+ POBPT+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+```{r remove pobpt }
+back_logistic_fit_8 <- glm(formula= period ~ Hos_LOS+ age+Ethnicity +PMM  + PPV+Urgent +Sug_Dur +Pri_MI +smoker +RFD + PAD+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_8)
 ```
-```{r remove RFD }
-back_logistic_fit_9 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Sug_Dur +Pri_MI +smoker  + PAD+ POBPT+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+```{r remove PAD }
+back_logistic_fit_9 <- glm(formula= period ~ Hos_LOS+ age+Ethnicity +PMM  + PPV+Urgent +Sug_Dur +Pri_MI +smoker +RFD + POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_9)
 ```
-```{r remove POBPT }
-back_logistic_fit_10 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Sug_Dur +Pri_MI +smoker  + PAD+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+```{r remove RFD }
+back_logistic_fit_10 <- glm(formula= period ~ Hos_LOS+ age+Ethnicity +PMM  + PPV+Urgent +Sug_Dur +Pri_MI +smoker  + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_10)
 ```
-```{r remove PAD }
-back_logistic_fit_11 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Sug_Dur +Pri_MI +smoker + XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+```{r remove Pri_MI }
+back_logistic_fit_11 <- glm(formula= period ~ Hos_LOS+ age+Ethnicity +PMM  + PPV+Urgent +Sug_Dur +smoker +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_11)
 ```
 
 
 
 ```{r remove Pri_MI }
-back_logistic_fit_11 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Sug_Dur +smoker + XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
+back_logistic_fit_11 <- glm(formula= period ~ Hos_LOS+ age+Ethnicity +PMM  + PPV+Urgent  +Pri_MI +smoker +RFD + PAD+ POBPT+ TBU+ XCT+ CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_11)
 ```
 
 
 ```{r remove XCT }
-back_logistic_fit_12 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Sug_Dur +smoker + CPBT, family = binomial(link = "logit"), data = glmdata)
+back_logistic_fit_12 <- glm(formula= period ~ Hos_LOS+Ethnicity +PMM + PPV +Sug_Dur +smoker + CPBT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_12)
 ```
 ```{r remove CPBT }
-back_logistic_fit_13 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Sug_Dur +smoker + XCT, family = binomial(link = "logit"), data = glmdata)
+back_logistic_fit_13 <- glm(formula= period ~ Hos_LOS+Ethnicity +PMM + PPV +Sug_Dur +smoker + XCT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_13)
 ```
 ```{r remove PPV }
-back_logistic_fit_14 <- glm(formula= period ~ IHV_24+Ethnicity +PMM  +Sug_Dur +smoker +XCT , family = binomial(link = "logit"), data = glmdata)
+back_logistic_fit_14 <- glm(formula= period ~ Hos_LOS+Ethnicity +PMM  +Sug_Dur +smoker +XCT , family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_14)
 ```
 ```{r remove PMM }
-back_logistic_fit_15 <- glm(formula= period ~ IHV_24+Ethnicity   +Sug_Dur +smoker + XCT, family = binomial(link = "logit"), data = glmdata)
+back_logistic_fit_15 <- glm(formula= period ~ Hos_LOS+Ethnicity   +Sug_Dur +smoker + XCT, family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_15)
 ```
 
 ```{r remove Sug_dur }
-back_logistic_fit_16 <- glm(formula= period ~ IHV_24+Ethnicity +smoker , family = binomial(link = "logit"), data = glmdata)
+back_logistic_fit_16 <- glm(formula= period ~ Hos_LOS+Ethnicity +smoker , family = binomial(link = "logit"), data = glmdata)
 summary(back_logistic_fit_16)
 ```
 
 ```{r nonadata}
-nonadata <- glmdata %>% select(period,IHV_24, Ethnicity, smoker, PMM, PPV, XCT, Sug_Dur, CPBT) %>% na.omit()
+nonadata <- glmdata %>% select(period,Hos_LOS, Ethnicity, smoker, PMM, PPV, XCT, Sug_Dur, CPBT) %>% na.omit()
 ```
 
 
 ```{r remove Pri_MI }
-back_logistic_fit_11 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Sug_Dur +smoker + XCT+ CPBT, family = binomial(link = "logit"), data = nonadata)
+back_logistic_fit_11 <- glm(formula= period ~ Hos_LOS+Ethnicity +PMM + PPV +Sug_Dur +smoker + XCT+ CPBT, family = binomial(link = "logit"), data = nonadata)
 summary(back_logistic_fit_11)
 ```
 
 
 ```{r remove XCT }
-back_logistic_fit_12 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Sug_Dur +smoker + CPBT, family = binomial(link = "logit"), data = nonadata)
+back_logistic_fit_12 <- glm(formula= period ~ Hos_LOS+Ethnicity +PMM + PPV +Sug_Dur +smoker + CPBT, family = binomial(link = "logit"), data = nonadata)
 summary(back_logistic_fit_12)
 ```
 ```{r remove CPBT }
-back_logistic_fit_13 <- glm(formula= period ~ IHV_24+Ethnicity +PMM + PPV +Sug_Dur +smoker + XCT, family = binomial(link = "logit"), data = nonadata)
+back_logistic_fit_13 <- glm(formula= period ~ Hos_LOS+Ethnicity +PMM + PPV +Sug_Dur +smoker + XCT, family = binomial(link = "logit"), data = nonadata)
 summary(back_logistic_fit_13)
 ```
 ```{r remove PPV }
-back_logistic_fit_14 <- glm(formula= period ~ IHV_24+Ethnicity +PMM  +Sug_Dur +smoker +XCT , family = binomial(link = "logit"), data = nonadata)
+back_logistic_fit_14 <- glm(formula= period ~ Hos_LOS+Ethnicity +PMM  +Sug_Dur +smoker +XCT , family = binomial(link = "logit"), data = nonadata)
 summary(back_logistic_fit_14)
 ```
 ```{r remove PMM }
-back_logistic_fit_15 <- glm(formula= period ~ IHV_24+Ethnicity   +Sug_Dur +smoker + XCT, family = binomial(link = "logit"), data = nonadata)
+back_logistic_fit_15 <- glm(formula= period ~ Hos_LOS+Ethnicity   +Sug_Dur +smoker + XCT, family = binomial(link = "logit"), data = nonadata)
 summary(back_logistic_fit_15)
 ```
 
 ```{r remove Sug_dur }
-back_logistic_fit_16 <- glm(formula= period ~ IHV_24+Ethnicity +smoker , family = binomial(link = "logit"), data = nonadata)
+back_logistic_fit_16 <- glm(formula= period ~ Hos_LOS+Ethnicity +smoker , family = binomial(link = "logit"), data = nonadata)
 summary(back_logistic_fit_16)
 ```
 
 ```{r}
-test_logistic_fit <- glm(formula= period ~ IHV_24 + Sug_Dur + smoker +Ethnicity +XCT + PMM , family = binomial(link = "logit"), 
+test_logistic_fit <- glm(formula= period ~ Hos_LOS + Sug_Dur + smoker +Ethnicity +XCT + PMM , family = binomial(link = "logit"), 
     data = nonadata)
 summary(test_logistic_fit)
 ```
